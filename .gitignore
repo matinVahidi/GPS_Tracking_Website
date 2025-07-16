@@ -18,7 +18,7 @@ logs/
 Thumbs.db
 
 # Vue CLI / Vite build output
-client/dist/
+
 
 # Optional: VSCode settings
 .vscode/
