@@ -13,7 +13,7 @@ import realtimeTrackingRoutes from './routes/realtimeTracking.js';
 import adminMenuRoutes from './routes/adminMenu.js';
 
 const app = express();
-const PORT = process.env.PORT || 2000;
+const PORT = 80;
 const Ip = '0.0.0.0';
 
 const __filename = fileURLToPath(import.meta.url);
