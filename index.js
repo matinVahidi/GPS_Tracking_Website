@@ -14,7 +14,7 @@ import adminMenuRoutes from './routes/adminMenu.js';
 
 const app = express();
 const PORT = process.env.PORT || 2000;
-const Ip = '213.233.184.186';
+const Ip = '0.0.0.0';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,5 +36,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, Ip, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
