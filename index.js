@@ -14,6 +14,7 @@ import adminMenuRoutes from './routes/adminMenu.js';
 
 const app = express();
 const PORT = process.env.PORT || 2000;
+const Ip = '213.233.184.186';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,6 @@ app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, Ip, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
