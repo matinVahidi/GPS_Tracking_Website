@@ -42,7 +42,7 @@
 import express from 'express';
 
 const app = express();
-const PORT = 2000;
+const PORT = 10050;
 const Ip = '0.0.0.0';
 
 app.get('/', (req, res) => {
