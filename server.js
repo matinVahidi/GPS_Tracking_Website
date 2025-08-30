@@ -48,6 +48,6 @@ app.get('/data', (req, res) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, '213.233.184.186', () => {
+  console.log(`Server is running on http://213.233.184.186:${PORT}`);
 });
