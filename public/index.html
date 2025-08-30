@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>GPS Data Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <h1>GPS Device Data</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Device ID</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Timestamp</th>
+        <th>Accuracy</th>
+        <th>Altitude</th>
+        <th>Speed</th>
+        <th>Heading</th>
+        <th>Battery</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="dataRows">
+      <!-- Data rows will be inserted here -->
+    </tbody>
+  </table>
+
+  <script>
+    async function loadData() {
+      const response = await fetch('/data');
+      const data = await response.json();
+      
+      const tbody = document.getElementById('dataRows');
+      tbody.innerHTML = ''; // Clear previous data
+
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.deviceId}</td>
+          <td>${item.latitude }</td>
+          <td>${item.longitude}</td>
+          <td>${item.timestamp }</td>
+          <td>${item.accuracy }</td>
+          <td>${item.altitude }</td>
+          <td>${item.speed }</td>
+          <td>${item.heading }</td>
+          <td>${item.battery }</td>
+          <td>${item.status}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Load data every 5 seconds
+    setInterval(loadData, 5000);
+    loadData(); // Initial load
+  </script>
+</body>
+</html>
