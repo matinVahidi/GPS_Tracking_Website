@@ -2,6 +2,8 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const axios = require('axios');    // <-- add this
+const https = require('https');    // <-- add this
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,38 +12,62 @@ const PORT = process.env.PORT || 3000;
 let deviceData = [];
 
 // Middlewares
-app.use(express.json()); // for JSON data
-app.use(express.urlencoded({ extended: true })); // for URL-encoded data
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
 
-// Simple POST endpoint for your device to send data
+// POST endpoint for your device to send data
 app.post('/ingest', async (req, res) => {
-    try{
-        const {deviceId, latitude, longitude, timestamp, accuracy, altitude, speed, heading, battery, status } = req.body;
+    try {
+        const { deviceId, latitude, longitude, timestamp, accuracy, altitude, speed, heading, battery, status } = req.body;
 
-        // Save data in memory (add to list), null/empty fields are allowed
+        // Save in memory
         deviceData.push({
-            deviceId: deviceId,
-            latitude: latitude , // if empty string or undefined, set as null
-            longitude: longitude ,
-            timestamp: timestamp ,
-            accuracy: accuracy ,
-            altitude: altitude ,
-            speed: speed ,
-            heading: heading ,
-            battery: battery ,
-            status: status ,
+            deviceId,
+            latitude,
+            longitude,
+            timestamp,
+            accuracy,
+            altitude,
+            speed,
+            heading,
+            battery,
+            status,
         });
 
-        // Respond back with success
+        // Forward to HTTPS tracking server (Option B: skip cert verification)
+        const agent = new https.Agent({ rejectUnauthorized: false });
+        const TRACKING_SERVER_URL = 'https://213.233.184.186:80/api/track/update'; // adjust port if needed
+
+        try {
+            const response = await axios.post(TRACKING_SERVER_URL, {
+                deviceId,
+                latitude,
+                longitude,
+                status,
+                timestamp,
+                accuracy,
+                altitude,
+                speed,
+                heading,
+                battery
+            }, { httpsAgent: agent, headers: { 'Content-Type': 'application/json' } });
+
+            console.log('Forwarded to tracking server:', response.data);
+        } catch (err) {
+            console.error('Error forwarding to tracking server:', err.message);
+        }
+
+        // Respond back with success to original client
         res.send({ success: true });
-    } catch(error){
+    } catch (error) {
         console.log(error.message);
+        res.status(500).send({ success: false, error: error.message });
     }
 });
 
-// Endpoint to get all stored data (for frontend)
+// Endpoint to get all stored data
 app.get('/data', (req, res) => {
-  res.json(deviceData);
+    res.json(deviceData);
 });
 
 // Serve static HTML
