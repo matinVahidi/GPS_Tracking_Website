@@ -8,9 +8,6 @@ const https = require('https');    // <-- add this
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Store the data in memory (simple object)
-let deviceData = [];
-
 // Middlewares
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
@@ -20,23 +17,9 @@ app.post('/ingest', async (req, res) => {
     try {
         const { deviceId, latitude, longitude, timestamp, accuracy, altitude, speed, heading, battery, status } = req.body;
 
-        // Save in memory
-        deviceData.push({
-            deviceId,
-            latitude,
-            longitude,
-            timestamp,
-            accuracy,
-            altitude,
-            speed,
-            heading,
-            battery,
-            status,
-        });
-
         // Forward to HTTPS tracking server (Option B: skip cert verification)
         const agent = new https.Agent({ rejectUnauthorized: false });
-        const TRACKING_SERVER_URL = 'https://213.233.184.186:80/api/track/update'; // adjust port if needed
+        const TRACKING_SERVER_URL = 'https://localhost:80/api/track/update'; // adjust port if needed
 
         try {
             const response = await axios.post(TRACKING_SERVER_URL, {
@@ -64,14 +47,6 @@ app.post('/ingest', async (req, res) => {
         res.status(500).send({ success: false, error: error.message });
     }
 });
-
-// Endpoint to get all stored data
-app.get('/data', (req, res) => {
-    res.json(deviceData);
-});
-
-// Serve static HTML
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
